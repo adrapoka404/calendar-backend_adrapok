@@ -26,6 +26,7 @@ app.use("/api/auth", require("./routes/auth"));
 
 app.use("/api/accounts", require("./routes/accounts"));
 app.use("/api/payments", require("./routes/payments"));
+app.use("/api/users", require("./routes/users"));
 
 app.use("*", (req, res) => {
   req.sendFile(path.join(__dirname, "public/index.html"));
