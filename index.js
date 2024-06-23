@@ -1,3 +1,4 @@
+const path = require("path");
 const express = require("express");
 const { dbConnection } = require("./databases/config");
 const cors = require("cors");
@@ -18,11 +19,17 @@ app.use(express.static("public"));
 
 // Lectura y parseo del body
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Rutas
 app.use("/api/auth", require("./routes/auth"));
-app.use("/api/events", require("./routes/events"));
 
+app.use("/api/accounts", require("./routes/accounts"));
+app.use("/api/payments", require("./routes/payments"));
+
+app.use("*", (req, res) => {
+  req.sendFile(path.join(__dirname, "public/index.html"));
+});
 // TODO: CRUD: Eventos
 // Escuchar peticiones
 app.listen(process.env.PORT, () => {
