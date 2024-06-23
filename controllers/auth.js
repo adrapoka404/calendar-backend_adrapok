@@ -44,7 +44,7 @@ const loginUsuario = async (req, res = response) => {
 
   try {
     const usuario = await Usuario.findOne({ email });
-    console.log(usuario);
+
     if (!usuario) {
       return res.status(400).json({
         ok: false,
@@ -67,6 +67,7 @@ const loginUsuario = async (req, res = response) => {
       ok: true,
       uid: usuario.id,
       name: usuario.name,
+      admin: usuario.admin || false,
       token,
     });
   } catch (error) {
