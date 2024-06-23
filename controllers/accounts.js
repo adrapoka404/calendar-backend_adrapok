@@ -12,7 +12,8 @@ const getCuentas = async (req, res = response) => {
     const cuentas = await Cuenta.find({ status })
       .sort({ createdAt: sort })
       .skip((page - 1) * limit)
-      .limit(limit);
+      .limit(limit)
+      .popupale("payments", "asignedTo");
 
     const count = await Cuenta.countDocuments();
     const pages = Math.ceil(count / limit);
