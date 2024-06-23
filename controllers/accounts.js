@@ -13,7 +13,8 @@ const getCuentas = async (req, res = response) => {
       .sort({ createdAt: sort })
       .skip((page - 1) * limit)
       .limit(limit)
-      .populate("payments", "asignedTo");
+      .populate("payments")
+      .populate("asignedTo");
 
     const count = await Cuenta.countDocuments();
     const pages = Math.ceil(count / limit);
