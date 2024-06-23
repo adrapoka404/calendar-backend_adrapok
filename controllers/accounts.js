@@ -10,7 +10,7 @@ const getCuentas = async (req, res = response) => {
   if (req.query.sort === "up") sort = 1;
   try {
     const cuentas = await Cuenta.find({ status })
-      .sort({ createdAt: sort })
+      .sort({ created: sort })
       .skip((page - 1) * limit)
       .limit(limit)
       .populate("payments")
