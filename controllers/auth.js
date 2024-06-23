@@ -28,13 +28,14 @@ const crearUsuario = async (req, res = response) => {
       ok: true,
       uid: usuario.id,
       name: usuario.name,
+      admin: usuario.admin || false,
       token,
     });
   } catch (error) {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "mamo!",
+      msg: "Contacte a su administrador de BD!",
     });
   }
 };
@@ -83,10 +84,21 @@ const revalidarToken = async (req, res = response) => {
   const { uid, name } = req;
   // Generar Token
   const token = await generarJWT(uid, name);
+
+  const usuario = await Usuario.findOne({ _id: uid });
+
+  if (!usuario) {
+    return res.status(400).json({
+      ok: false,
+      msg: "Usuario y/o contraseña incorrectos",
+    });
+  }
+
   res.status(200).json({
     ok: true,
     uid,
     name,
+    admin: usuario.admin || false,
     token,
   });
 };
