@@ -74,7 +74,7 @@ const loginUsuario = async (req, res = response) => {
     console.log(error);
     res.status(500).json({
       ok: false,
-      msg: "mamo!",
+      msg: "Ponganse en contacto con el administrador de BD!",
     });
   }
 };
