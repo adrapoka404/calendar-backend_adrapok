@@ -1,7 +1,9 @@
 const { response } = require("express");
 const Cuenta = require("../models/Cuenta");
+const Usuario = require("../models/Usuario");
 
 const getCuentas = async (req, res = response) => {
+  const uid = req.uid;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const status = req.query.status || false;
@@ -13,14 +15,23 @@ const getCuentas = async (req, res = response) => {
     if (status) {
       searchCriteria.status = status;
     }
-
-    const cuentas = await Cuenta.find(searchCriteria)
-      .sort({ created: sort })
-      .skip((page - 1) * limit)
-      .limit(limit)
-      .populate("payments")
-      .populate("asignedTo", "name _id");
-
+    const usuario = Usuario.findById(uid);
+    let cuentas = [];
+    if (usuario.admin) {
+      cuentas = await Cuenta.find(searchCriteria)
+        .sort({ created: sort })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate("payments")
+        .populate("asignedTo", "name _id");
+    } else {
+      cuentas = await Cuenta.find({ ...searchCriteria, asignedTo: uid })
+        .sort({ created: sort })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate("payments")
+        .populate("asignedTo", "name _id");
+    }
     const count = await Cuenta.countDocuments();
     const pages = Math.ceil(count / limit);
 
