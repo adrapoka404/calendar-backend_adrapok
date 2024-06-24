@@ -11,7 +11,10 @@ const getCuentas = async (req, res = response) => {
 
   if (req.query.sort === "up") sort = 1;
   try {
-    const searchCriteria = status ? { status } : {};
+    // const searchCriteria = status ? { status } : {};
+    let searchCriteria = {};
+
+    searchCriteria.status = { $regex: new RegExp(status, "i") };
 
     const usuario = await Usuario.findById(uid);
 
