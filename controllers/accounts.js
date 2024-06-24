@@ -14,7 +14,7 @@ const getCuentas = async (req, res = response) => {
       .skip((page - 1) * limit)
       .limit(limit)
       .populate("payments")
-      .populate("asignedTo");
+      .populate("asignedTo", "name _id");
 
     const count = await Cuenta.countDocuments();
     const pages = Math.ceil(count / limit);
@@ -61,7 +61,10 @@ const actualizarCuenta = async (req, res = response) => {
   const uid = req.uid;
 
   try {
-    const cuenta = await Cuenta.findById(cuentaId);
+    const cuenta = await Cuenta.findById(cuentaId).populate(
+      "asignedTo",
+      "name _id"
+    );
 
     if (!cuenta) {
       console.log("Error:  No se encontro cuenta con id: ", cuentaId);
