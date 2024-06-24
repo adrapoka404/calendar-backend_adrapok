@@ -11,12 +11,12 @@ const getCuentas = async (req, res = response) => {
 
   if (req.query.sort === "up") sort = 1;
   try {
-    const searchCriteria = {};
-    if (status) {
-      searchCriteria.status = status;
-    }
+    const searchCriteria = status ? { status } : {};
+
     const usuario = Usuario.findById(uid);
+    console.log(uid);
     let cuentas = [];
+
     if (usuario.admin) {
       cuentas = await Cuenta.find(searchCriteria)
         .sort({ created: sort })
