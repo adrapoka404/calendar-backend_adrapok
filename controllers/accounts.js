@@ -96,13 +96,13 @@ const actualizarCuenta = async (req, res = response) => {
     }
 
     //que sea el mismo user que la creo
-    if (cuenta.createdBy.toString() !== uid) {
-      console.log("Error:  no es el mismo usuario creador");
-      return res.status(401).json({
-        ok: true,
-        msg: "Privilegios insuficientes",
-      });
-    }
+    // if (cuenta.createdBy.toString() !== uid) {
+    //   console.log("Error:  no es el mismo usuario creador");
+    //   return res.status(401).json({
+    //     ok: true,
+    //     msg: "Privilegios insuficientes",
+    //   });
+    // }
 
     const nuevaCuenta = {
       ...req.body,
