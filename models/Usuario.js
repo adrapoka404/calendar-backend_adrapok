@@ -18,6 +18,10 @@ const UsuarioSchema = Schema({
     type: Boolean,
     default: false,
   },
+  profile: {
+    type: Schema.Types.ObjectId,
+    ref: "Profile",
+  },
 });
 
 module.exports = model("Usuario", UsuarioSchema);
