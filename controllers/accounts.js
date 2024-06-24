@@ -14,9 +14,9 @@ const getCuentas = async (req, res = response) => {
     const searchCriteria = status ? { status } : {};
 
     const usuario = Usuario.findById(uid);
-    console.log(uid);
-    let cuentas = [];
 
+    let cuentas = [];
+    let count = 0;
     if (usuario.admin) {
       cuentas = await Cuenta.find(searchCriteria)
         .sort({ created: sort })
@@ -24,6 +24,8 @@ const getCuentas = async (req, res = response) => {
         .limit(limit)
         .populate("payments")
         .populate("asignedTo", "name _id");
+
+      count = await Cuenta.countDocuments(searchCriteria);
     } else {
       cuentas = await Cuenta.find({ ...searchCriteria, asignedTo: uid })
         .sort({ created: sort })
@@ -31,8 +33,13 @@ const getCuentas = async (req, res = response) => {
         .limit(limit)
         .populate("payments")
         .populate("asignedTo", "name _id");
+
+      count = await Cuenta.countDocuments({
+        ...searchCriteria,
+        asignedTo: uid,
+      });
     }
-    const count = await Cuenta.countDocuments();
+
     const pages = Math.ceil(count / limit);
 
     res.status(200).json({
