@@ -86,7 +86,7 @@ const revalidarToken = async (req, res = response) => {
   // Generar Token
   const token = await generarJWT(uid, name);
 
-  const usuario = await Usuario.findOne({ _id: uid });
+  const usuario = await Usuario.findOne({ _id: uid }).populate("profile");
 
   if (!usuario) {
     return res.status(400).json({
@@ -101,6 +101,7 @@ const revalidarToken = async (req, res = response) => {
     name,
     admin: usuario.admin || false,
     token,
+    profile: usuario.profile,
   });
 };
 module.exports = { crearUsuario, loginUsuario, revalidarToken };
