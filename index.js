@@ -28,6 +28,7 @@ app.use("/api/accounts", require("./routes/accounts"));
 app.use("/api/payments", require("./routes/payments"));
 app.use("/api/users", require("./routes/users"));
 app.use("/api/profiles", require("./routes/profiles"));
+app.use("/api/banwire", require("./routes/banwire"));
 
 app.use("*", (req, res) => {
   req.sendFile(path.join(__dirname, "public/index.html"));

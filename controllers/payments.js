@@ -23,6 +23,7 @@ const crearPago = async (req, res = response) => {
 
     // Agregar el nuevo pago al arreglo de pagos de la cuenta
     cuenta.payments.push(pagoGuardado.id);
+    cuenta.status = pagoGuardado.status;
     await cuenta.save();
 
     res.status(201).json({
