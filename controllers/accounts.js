@@ -61,10 +61,7 @@ const actualizarCuenta = async (req, res = response) => {
   const uid = req.uid;
 
   try {
-    const cuenta = await Cuenta.findById(cuentaId).populate(
-      "asignedTo",
-      "name _id"
-    );
+    const cuenta = await Cuenta.findById(cuentaId);
 
     if (!cuenta) {
       console.log("Error:  No se encontro cuenta con id: ", cuentaId);
@@ -92,7 +89,7 @@ const actualizarCuenta = async (req, res = response) => {
       cuentaId,
       nuevaCuenta,
       { new: true }
-    );
+    ).populate("asignedTo", "name _id");
 
     res.status(201).json({
       ok: true,
