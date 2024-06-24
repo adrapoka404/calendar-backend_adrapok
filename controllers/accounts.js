@@ -4,12 +4,17 @@ const Cuenta = require("../models/Cuenta");
 const getCuentas = async (req, res = response) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const status = req.query.status || "";
+  const status = req.query.status || false;
   let sort = -1;
 
   if (req.query.sort === "up") sort = 1;
   try {
-    const cuentas = await Cuenta.find({ status })
+    const searchCriteria = {};
+    if (status) {
+      searchCriteria.status = status;
+    }
+
+    const cuentas = await Cuenta.find(searchCriteria)
       .sort({ created: sort })
       .skip((page - 1) * limit)
       .limit(limit)
