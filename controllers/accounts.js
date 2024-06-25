@@ -1,37 +1,27 @@
 const { response } = require("express");
 const Cuenta = require("../models/Cuenta");
 const Usuario = require("../models/Usuario");
+const { ObjectId } = require("mongodb");
 
 const getCuentas = async (req, res = response) => {
   const uid = req.uid;
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
-  const status = req.query.status || false;
+  const status = req.query.status || "";
   let sort = -1;
 
   if (req.query.sort === "up") sort = 1;
+
   try {
-    // const searchCriteria = status ? { status } : {};
-    let searchCriteria = {};
-
-    searchCriteria.status = { $regex: new RegExp(status, "i") };
-
     const usuario = await Usuario.findById(uid);
 
     let cuentas = [];
     let count = 0;
 
     if (usuario.admin) {
-      cuentas = await Cuenta.find(searchCriteria)
-        .sort({ created: sort })
-        .skip((page - 1) * limit)
-        .limit(limit)
-        .populate("payments")
-        .populate("asignedTo", "name _id");
-
-      count = await Cuenta.countDocuments(searchCriteria);
-    } else {
-      cuentas = await Cuenta.find({ ...searchCriteria, asignedTo: uid })
+      cuentas = await Cuenta.find({
+        status: { $regex: status + ".*", $options: "i" },
+      })
         .sort({ created: sort })
         .skip((page - 1) * limit)
         .limit(limit)
@@ -39,8 +29,21 @@ const getCuentas = async (req, res = response) => {
         .populate("asignedTo", "name _id");
 
       count = await Cuenta.countDocuments({
-        ...searchCriteria,
+        status: { $regex: status + ".*", $options: "i" },
+      });
+    } else {
+      cuentas = await Cuenta.find({
+        status: { $regex: new RegExp(status, "i") },
         asignedTo: uid,
+      })
+        .sort({ created: sort })
+        .skip((page - 1) * limit)
+        .limit(limit)
+        .populate("payments")
+        .populate("asignedTo", "name _id");
+
+      count = await Cuenta.countDocuments({
+        status: { $regex: status + ".*", $options: "i" },
       });
     }
 
