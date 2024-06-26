@@ -1,7 +1,6 @@
 const { response } = require("express");
 const Cuenta = require("../models/Cuenta");
 const Usuario = require("../models/Usuario");
-const { ObjectId } = require("mongodb");
 
 const getCuentas = async (req, res = response) => {
   const uid = req.uid;
@@ -33,7 +32,7 @@ const getCuentas = async (req, res = response) => {
       });
     } else {
       cuentas = await Cuenta.find({
-        status: { $regex: new RegExp(status, "i") },
+        status: { $regex: status + ".*", $options: "i" },
         asignedTo: uid,
       })
         .sort({ created: sort })
@@ -44,6 +43,7 @@ const getCuentas = async (req, res = response) => {
 
       count = await Cuenta.countDocuments({
         status: { $regex: status + ".*", $options: "i" },
+        asignedTo: uid,
       });
     }
 
@@ -100,15 +100,6 @@ const actualizarCuenta = async (req, res = response) => {
         msg: "Pongase en contacto con su administrador de BD",
       });
     }
-
-    //que sea el mismo user que la creo
-    // if (cuenta.createdBy.toString() !== uid) {
-    //   console.log("Error:  no es el mismo usuario creador");
-    //   return res.status(401).json({
-    //     ok: true,
-    //     msg: "Privilegios insuficientes",
-    //   });
-    // }
 
     const nuevaCuenta = {
       ...req.body,
