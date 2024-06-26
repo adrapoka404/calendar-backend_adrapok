@@ -7,9 +7,7 @@ const getCuentas = async (req, res = response) => {
   const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 10;
   const status = req.query.status || "";
-  let sort = -1;
-
-  if (req.query.sort === "up") sort = 1;
+  const sort = parseInt(req.query.sort) || -1;
 
   try {
     const usuario = await Usuario.findById(uid);
