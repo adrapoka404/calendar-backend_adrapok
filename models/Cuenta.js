@@ -1,6 +1,11 @@
 const { Schema, model } = require("mongoose");
 
 const CuentaSchema = Schema({
+  _id: {
+    type: String,
+    required: true,
+    maxlength: 20,
+  },
   title: {
     type: String,
     required: true,

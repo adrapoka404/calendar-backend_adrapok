@@ -1,6 +1,7 @@
 const { response } = require("express");
 const Cuenta = require("../models/Cuenta");
 const Usuario = require("../models/Usuario");
+const crypto = require("crypto");
 
 const getCuentas = async (req, res = response) => {
   const uid = req.uid;
@@ -66,7 +67,8 @@ const getCuentas = async (req, res = response) => {
 
 const crearCuenta = async (req, res = response) => {
   const cuenta = new Cuenta(req.body);
-  console.log(req.body);
+
+  cuenta._id = generateUniqueId();
   try {
     cuenta.createdBy = req.uid;
     cuentaGuardada = await cuenta.save();
@@ -158,5 +160,14 @@ const eliminarCuenta = async (req, res = response) => {
     });
   }
 };
+
+function generateUniqueId() {
+  const timestamp = Math.floor(Date.now() / 1000).toString(36); // Base36 timestamp
+  const random = crypto
+    .randomBytes(10)
+    .toString("base64")
+    .replace(/[^a-zA-Z0-9]/g, ""); // 10 bytes aleatorios convertidos a base64 y limpiados
+  return (timestamp + random).slice(0, 20); // Concatenar y cortar a 20 caracteres
+}
 
 module.exports = { getCuentas, crearCuenta, actualizarCuenta, eliminarCuenta };
